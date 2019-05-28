@@ -1,0 +1,4 @@
+requests
+inputs
+opencv-python
+protobuf
