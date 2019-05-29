@@ -34,7 +34,8 @@ def SearchForDev():
         devices = service.discover(2)
 
         for address, name in devices.items():
-                print("name: {}, address: {}".format(name, address))
+                print("{}:{}".format(name, address))
 
 while (isinterupted == False):
+        time.sleep(1)# Avoid Spamming stdout
         SearchForDev()
