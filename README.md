@@ -5,4 +5,5 @@ This repository is a proof of concept (POC) to controll a skydio drone with a co
 + Skydio Skills SDK: https://github.com/Skydio/skydio-skills
 
 # Anfangen
-+ ```pip3 install -r requirements.txt```
+1. ```sudo sh setup.sh```
+2. ```pip3 install -r requirements.txt```
