@@ -8,12 +8,15 @@ import sys
 import bluetooth
 from uuid import uuid4
 from bluetooth.ble import DiscoveryService
+from bluetooth import *
 
 addr = None
 BaudRate = 19200
 MaxBytes = 100000
 interval = 100
-UUID = "00001101-0000-10000-8000-008055f9b34fb"
+#uuid = "00001101-0000-10000-8000-008055f9b34fb"
+uuid = "94f39d29-7d6d-437d-973b-fba39e49d4ee"
+addr = "00:80:E1:BC:4A:22"
 currentPose = "__"
 nearby_devices = bluetooth.discover_devices(lookup_names=True)
 input = raw_input
@@ -26,16 +29,23 @@ def working():
 
 def SearchForDev():
         for addr, name in nearby_devices:
-                print("  %s - %s" % (addr, name))
-        print("found %d devices" % len(nearby_devices))
+                print("%s:%s" % (addr, name))
+                device = name
+        if (len(nearby_devices)==0):
+                print("Glove out of range!")
+        elif (len(nearby_devices)==1):
+                print("found %d device" % len(nearby_devices))
+        else:
+                print("found %d devices" % len(nearby_devices))
+SearchForDev()
 
-        # bluetooth low energy scan
-        service = DiscoveryService()
-        devices = service.discover(2)
+def connect():
+        # Establish RFCOMM Link
+        service_matches = find_service( uuid = uuid, address = addr )
+        if (len(service_matches)) == 0:
+                print("Unable to connect to glove! Exiting...")
+                exit()
+        elif (len(service_matches) == 1):
+                print("Locked on to commander glove!")
 
-        for address, name in devices.items():
-                print("{}:{}".format(name, address))
-
-while (isinterupted == False):
-        time.sleep(1)# Avoid Spamming stdout
-        SearchForDev()
+connect()
