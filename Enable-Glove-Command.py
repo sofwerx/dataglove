@@ -6,6 +6,7 @@
 import time
 import sys
 import bluetooth
+import socket
 from uuid import uuid4
 from bluetooth.ble import DiscoveryService
 from bluetooth import *
@@ -15,8 +16,8 @@ MaxBytes = 100000
 interval = 100
 uuid = "00001101-0000-1000-8000-00805f9b34fb"
 addr = "00:80:E1:BC:4A:22"
-server_sock=BluetoothSocket( RFCOMM )
-
+#server_sock = BluetoothSocket( RFCOMM )
+server_sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
 currentPose = "__"
 nearby_devices = bluetooth.discover_devices(lookup_names=True)
 input = raw_input
@@ -51,26 +52,22 @@ def connect():
                 name = first_match["name"]
                 host = first_match["host"]
                 print("[OK] Locked on to %s!" % (name))
+        sock=BluetoothSocket( RFCOMM )
+        sock.connect((host, port))
+        while True:
+                try:
+                        print("Listening...")
+                        data = sock.recv(1024)
+                        if (len(data != 0)):
+                                print (data)
+                        else:
+                                break
+                except KeyboardInterrupt:
+                        continue
+                except:
+                        break
+        sock.close()#Self Cleanup
+        exit()
 connect()
-
-client_sock, client_info = server_sock.accept()
-print("[OK] Authenticated with", client_info)
-
-def reciever():
-        try:
-                while True:
-                        data = client_sock.recv(1024)
-                        if len(data) == 0: break
-                        if len(data) < MaxBytes: continue
-                        print("received [%s]" % data)
-        except IOError:
-                print("[Err] An error has occoured in connecting to the device.")
-                pass
-reciever()
-
-#Cleanup connections
-client_sock.close()
-server_sock.close()
 print("disconnected")
-
 exit()
