@@ -54,7 +54,14 @@ def connect():
                 print("[OK] Locked on to %s!" % (name))
         sock=BluetoothSocket( RFCOMM )
         sock.connect((host, port))
-        while True:
+        
+        # Handshake
+        handshake1 = {172,...}#Sensor on signal
+        handshake2 = {172,...}
+        sock.send(handshake1)
+        sock.send(handshake2)
+
+        while True:#Move to recv function
                 try:
                         print("Listening...")
                         data = sock.recv(1024)
@@ -63,7 +70,7 @@ def connect():
                         else:
                                 break
                 except KeyboardInterrupt:
-                        continue
+                        exit()
                 except:
                         break
         sock.close()#Self Cleanup
