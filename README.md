@@ -9,4 +9,4 @@ This repository is a proof of concept (POC) to controll a skydio drone with a co
 2. ```pip3 install -r requirements.txt```
 
 # Run
-1. python Enable-Glove-Command.py
+1. ```python Enable-Glove-Command.py```
