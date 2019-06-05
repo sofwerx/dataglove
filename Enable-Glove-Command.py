@@ -14,6 +14,7 @@ from bluetooth import *
 BaudRate = 19200
 MaxBytes = 100000
 interval = 100
+backlog = 1
 uuid = "00001101-0000-1000-8000-00805f9b34fb"
 addr = "00:80:E1:BC:4A:22"
 #server_sock = BluetoothSocket( RFCOMM )
@@ -54,19 +55,28 @@ def connect():
                 print("[OK] Locked on to %s!" % (name))
         sock=BluetoothSocket( RFCOMM )
         sock.connect((host, port))
-        while True:
+
+        # handshake
+        handshake = str(bytearray([176, 115, 1,]))
+        engagecomms = str(bytearray([116, 118, 2]))
+        sock.send(handshake)
+        sock.send(engagecomms)
+
+        while True:#Move to recv function
                 try:
                         print("Listening...")
                         data = sock.recv(1024)
+                        #sock.listen(backlog)
                         if (len(data != 0)):
                                 print (data)
                         else:
                                 break
                 except KeyboardInterrupt:
-                        continue
+                        exit()
                 except:
                         break
         sock.close()#Self Cleanup
+        print("[Err] Connection closed by hub!")
         exit()
 connect()
 print("disconnected")
