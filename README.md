@@ -6,5 +6,5 @@ A proof of concept (POC) demonstrating the control of a skydio drone with a comm
 2. ```pip install -r requirements.txt```
 ## Run
 1. ```python Enable-Glove-Command.py```
-## Soruces
+## Resources
 + https://github.com/Skydio/skydio-skills
