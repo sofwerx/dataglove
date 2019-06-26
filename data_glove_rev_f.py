@@ -3,6 +3,7 @@ import time
 import sys
 import threading
 
+# © 2019 BeBop Sensors, Inc.
 data = []
 
 class GloveSerialListener(threading.Thread):
