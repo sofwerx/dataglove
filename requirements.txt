@@ -1,6 +1,0 @@
-requests
-inputs
-opencv-python
-protobuf
-gattlib
-pybluez
