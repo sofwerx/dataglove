@@ -2,6 +2,8 @@ import serial
 import time
 import sys
 import threading
+import matplotlib.pyplot as plt
+import numpy as np
 
 # © 2019 BeBop Sensors, Inc.
 data = []
@@ -61,7 +63,7 @@ def main():
 
     while True:
         time.sleep(.1)
-        print(data)
+        print(data[7],data[6],data[5],data[4],data[3])#[7]THUMB,[6]INDEX,[5]MIDDLE[4]RING[3]PINKY
 
     data_glove_thread.close()
 
