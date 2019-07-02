@@ -12,7 +12,7 @@ class GloveSerialListener(threading.Thread):
 
         self.glove = serial.Serial()
         self.glove.baudrate = 460800
-        self.glove.port = '/dev/cu.DataGlove37-SerialPort'
+        self.glove.port = '/dev/rfcomm0'
         self.glove.timeout = 1
         self.glove.open()
 
@@ -56,7 +56,7 @@ class GloveSerialListener(threading.Thread):
             self.close()
 
 def main():
-    data_glove_thread = GloveSerialListener('/dev/cu.DataGlove37-SerialPort')
+    data_glove_thread = GloveSerialListener('/dev/rfcomm0')
     data_glove_thread.start()
 
     while True:
