@@ -62,9 +62,25 @@ def main():
     data_glove_thread.start()
 
     while True:
-        time.sleep(.1)
-        print(data[7],data[6],data[5],data[4],data[3])#[7]THUMB,[6]INDEX,[5]MIDDLE[4]RING[3]PINKY
 
+        time.sleep(1)
+        if (data[0] == 1):
+            time.sleep(1)
+            thumb = (data[2] + data[3])
+            index = (data[4] + data[5])
+            middle = (data[6] + data[7])
+            ring = (data[8] + data[9])
+            pinky = (data[10] + data[11])
+            fingers = [thumb,index,middle,ring,pinky]
+            hand = sum([data[2], data[3], data[4], data[5], data[6], data[7], data[8], data[9], data[10], data[11]])
+            print(fingers,hand)
+            
+            if (hand >= 600):
+                print("Taking off...")
+                #Call Takeoff Function
+            elif (hand <=500):
+                print("Landing...")
+                #Call Land Function
     data_glove_thread.close()
 
 main()
