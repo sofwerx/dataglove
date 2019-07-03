@@ -31,7 +31,8 @@ class GloveSerialListener(threading.Thread):
             self.data.append(b)
 
             #might need some thread saftey here
-            data = self.data
+            if (self.data[0] == 1):
+                data = self.data
 
         else:
             self.data.append(b)
@@ -60,10 +61,20 @@ def main():
     data_glove_thread = GloveSerialListener('/dev/rfcomm0')
     data_glove_thread.start()
 
+    #Wait for data
+    if not data:
+        while True:
+            print("Waiting for data...")
+            time.sleep(2)
+            if data:
+                break
+
+
     while True:
 
         time.sleep(1)
-        if (data[0] == 1):
+        if (data[0] == 1 and data[1] == 11):
+            #Finger Data
             time.sleep(1)
             thumb = (data[2] + data[3])
             index = (data[4] + data[5])
@@ -72,13 +83,25 @@ def main():
             pinky = (data[10] + data[11])
             fingers = [thumb,index,middle,ring,pinky]
             hand = sum([data[2], data[3], data[4], data[5], data[6], data[7], data[8], data[9], data[10], data[11]])
-            print(fingers,hand)
+            #print(dtype,fingers,hand)
+            print(data)
             
             if (hand >= 600):
                 print("Taking off...")
-                #Call Takeoff Function
             if (hand <= 500 and thumb >= 200):
                 print("Landing...")
+
+        elif (data[0] == 2 and data[1] == 12):
+            #Accelerometer Data
+            print(data[0])
     data_glove_thread.close()
 
-main()
+#MainLoop
+while True:
+    try:
+        main()
+    except(OSError):
+        print("Failed to connect to glove. Retrying...")
+        time.sleep(1)
+    except(KeyboardInterrupt):
+        exit()
