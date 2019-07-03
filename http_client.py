@@ -422,12 +422,29 @@ class GloveSerialListener(threading.Thread):
         else:
             self.close()
 
+#Setup
+stream_settings = {'source': 'NATIVE', 'port': 55004}
+
+#Create Client
+client = HTTPClient('http://192.168.10.1',
+                pilot=True,
+                token_file=0,
+                stream_settings=stream_settings)
+
+# Periodically poll the status endpoint to keep ourselves the active pilot.
+def update_loop():
+    while True:
+        client.update_pilot_status()
+        time.sleep(2)
+status_thread = threading.Thread(target=update_loop)
+status_thread.setDaemon(True)
+status_thread.start()
+
 def main():
     data_glove_thread = GloveSerialListener('/dev/rfcomm0')
     data_glove_thread.start()
 
     while True:
-
         time.sleep(1)
         if (data[0] == 1):
             time.sleep(1)
@@ -440,14 +457,15 @@ def main():
             hand = sum([data[2], data[3], data[4], data[5], data[6], data[7], data[8], data[9], data[10], data[11]])
             print(fingers,hand)
             
+            #Define poses here
             if (hand >= 600):
                 #Takeoff
                 print("Taking off...")
-                HTTPClient.takeoff()
+                client.takeoff()
             if (hand <= 500 and thumb >= 200):
                 #Land
                 print("Landing...")
-                HTTPClient.land()
+                client.land()
     data_glove_thread.close()
-
 main()
+
