@@ -234,7 +234,7 @@ class HTTPClient(object):
         self.disable_faults()
 
         while True:
-            time.sleep(5)  # downsample to prevent spamming the endpoint
+            time.sleep(1)  # downsample to prevent spamming the endpoint
             phase = self.update_pilot_status().get('flightPhase')
             if not phase:
                 continue
@@ -245,15 +245,6 @@ class HTTPClient(object):
             elif phase == 'FLYING':
                 fmt_out('Flying.\n')
                 return
-            elif phase == 'REST':
-                fmt_out('on standby\n')
-            elif phase == 'FLIGHT_PROCESSES_CHECK':
-                fmt_out('Pre-Flight Check in progress\n')
-            elif phase == 'PREP':
-                fmt_out('Callibrating Cameras\n')
-            elif phase == 'LOGGING_START':
-                fmt_out('Initializing flight logs\n')
-
             else:
                 # print the active faults
                 fmt_out('Faults = {}\n', ','.join(self.get_blocking_faults()))
@@ -459,30 +450,44 @@ def main():
 
     while True:
         time.sleep(1)
-        try:
-            if (data[0] == 1):
-                time.sleep(1)
-                thumb = (data[2] + data[3])
-                index = (data[4] + data[5])
-                middle = (data[6] + data[7])
-                ring = (data[8] + data[9])
-                pinky = (data[10] + data[11])
-                fingers = [thumb,index,middle,ring,pinky]
-                hand = sum([data[2], data[3], data[4], data[5], data[6], data[7], data[8], data[9], data[10], data[11]])
-                print(fingers,hand)
+        if (data[0] == 1):
+            time.sleep(1)
+            thumb = (data[2] + data[3])
+            index = (data[4] + data[5])
+            middle = (data[6] + data[7])
+            ring = (data[8] + data[9])
+            pinky = (data[10] + data[11])
+            fingers = [thumb,index,middle,ring,pinky]
+            hand = sum([data[2], data[3], data[4], data[5], data[6], data[7], data[8], data[9], data[10], data[11]])#Explains how "Closed" the hand is
+            print(fingers,hand)
+            
+            #Define poses here
+            pose = "ofnen"
+
+            if (hand >= 600 and thumb >= 30):
+                print("Fist")
+                pose = "fist"
+            if (hand <= 500 and thumb >= 180):
+                print("Four")
+                pose = "four"
+            if (thumb <= 20 and index >= 140 and middle >= 140 and ring >= 100 and pinky >= 120):
+                print("Thumbs Up")
+                pose = "thumbsup"
+            if (thumb >= 20 and index <= 20 and middle <= 20 and ring >= 120 and pinky >= 120):
+                print("Peace")
+                pose = "peace"
+            if (index <= 20 and middle >= 140 and ring >= 140 and pinky <= 20):
+                print("Hook'em")
+                pose = "hookem"
+            else:
+                pose = "ofnen"
+            
+            #Define pose functions
+            if (pose == "fist"):
+                client.takeoff()
+            if (pose == "four")
+                client.land()
                 
-                #Define poses here
-                if (hand >= 600):
-                    #Takeoff
-                    print("Taking off...")
-                    client.takeoff()
-                if (hand <= 500 and thumb >= 200):
-                    #Land
-                    print("Landing...")
-                    client.land()
-        except(IndexError):
-            print("Connecting to glove...")
-            time.sleep(5)
     data_glove_thread.close()
 main()
 
