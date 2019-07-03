@@ -245,6 +245,8 @@ class HTTPClient(object):
             elif phase == 'FLYING':
                 fmt_out('Flying.\n')
                 return
+            elif phase == 'FLIGHT_PROCESSES_CHECK':
+                fmt_out('Pre-Flight Check in progress...')
             else:
                 # print the active faults
                 fmt_out('Faults = {}\n', ','.join(self.get_blocking_faults()))
