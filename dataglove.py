@@ -84,12 +84,27 @@ def main():
             fingers = [thumb,index,middle,ring,pinky]
             hand = sum([data[2], data[3], data[4], data[5], data[6], data[7], data[8], data[9], data[10], data[11]])
             #print(dtype,fingers,hand)
-            print(data)
-            
-            if (hand >= 600):
-                print("Taking off...")
-            if (hand <= 500 and thumb >= 200):
-                print("Landing...")
+            print(fingers)
+            #Defines current pose
+            pose = "ofnen"
+
+            if (hand >= 600 and thumb >= 30):
+                print("Fist")
+                pose = "fist"
+            if (hand <= 500 and thumb >= 180):
+                print("Four")
+                pose = "four"
+            if (thumb <= 20 and index >= 140 and middle >= 140 and ring >= 100 and pinky >= 120):
+                print("Thumbs Up")
+                pose = "thumbsup"
+            if (thumb >= 20 and index <= 20 and middle <= 20 and ring >= 120 and pinky >= 120):
+                print("Peace")
+                pose = "peace"
+            if (index <= 20 and middle >= 140 and ring >= 140 and pinky <= 20):
+                print("Hook'em")
+                pose = "hookem"
+            else:
+                pose = "ofnen"
 
         elif (data[0] == 2 and data[1] == 12):
             #Accelerometer Data
