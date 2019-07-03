@@ -2,6 +2,8 @@
 A proof of concept (POC) demonstrating the control of a skydio drone with a commander glove from BeBop sensors.
 
 ## Run
-1. ```python3 data_glove_rev_f.py```
+1. Connect the Commander Glove via bluetooth and be sure to open a serial port connection (RFCOMM0)
+2. Conect the Skydio Drone via WiFi (192.168.10.1)
+3. ```python3 http_client.py```
 ## Resources
 + https://github.com/Skydio/skydio-skills

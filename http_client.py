@@ -18,6 +18,8 @@ import requests
 import sys
 import threading
 import time
+import serial
+import numpy as np
 from uuid import uuid4
 
 try:
@@ -368,3 +370,110 @@ class HTTPClient(object):
             'action': action,
         })
         print(resp)
+
+data = []
+
+class GloveSerialListener(threading.Thread):
+    def __init__(self, port):
+        threading.Thread.__init__(self)
+
+        self.glove = serial.Serial()
+        self.glove.baudrate = 460800
+        self.glove.port = '/dev/rfcomm0'
+        self.glove.timeout = 1
+        self.glove.open()
+
+        self.data = []
+        self.data_shared = []
+
+    def parse(self, byte_to_parse):
+        global data
+
+        b = int.from_bytes(byte_to_parse, byteorder='big')
+        #print(b)
+        if b == 240:
+            self.data = []
+        elif b == 247:
+            self.data.append(b)
+
+            #might need some thread saftey here
+            data = self.data
+
+        else:
+            self.data.append(b)
+
+    def run(self):
+
+        global data
+
+        if self.glove.is_open:
+            # data on
+            self.glove.write(bytearray([176, 115, 1]))
+
+            # usb mode
+            #self.glove.write(bytearray([176, 118, 1]))
+
+            # bluetooth mode
+            self.glove.write(bytearray([176, 118, 2]))
+
+            while True:
+                self.parse(self.glove.read())
+
+        else:
+            self.close()
+
+#Setup
+stream_settings = {'source': 'NATIVE', 'port': 55004}
+
+#Create Client
+try:
+    client = HTTPClient('http://192.168.10.1',
+                    pilot=True,
+                    token_file=0,
+                    stream_settings=stream_settings)
+except(OSError):
+    print("Failed to connect to drone! Exiting...")
+    exit()
+
+# Periodically poll the status endpoint to keep ourselves the active pilot.
+def update_loop():
+    while True:
+        client.update_pilot_status()
+        time.sleep(2)
+status_thread = threading.Thread(target=update_loop)
+status_thread.setDaemon(True)
+status_thread.start()
+
+def main():
+    data_glove_thread = GloveSerialListener('/dev/rfcomm0')
+    data_glove_thread.start()
+
+    while True:
+        time.sleep(1)
+        try:
+            if (data[0] == 1):
+                time.sleep(1)
+                thumb = (data[2] + data[3])
+                index = (data[4] + data[5])
+                middle = (data[6] + data[7])
+                ring = (data[8] + data[9])
+                pinky = (data[10] + data[11])
+                fingers = [thumb,index,middle,ring,pinky]
+                hand = sum([data[2], data[3], data[4], data[5], data[6], data[7], data[8], data[9], data[10], data[11]])
+                print(fingers,hand)
+                
+                #Define poses here
+                if (hand >= 600):
+                    #Takeoff
+                    print("Taking off...")
+                    client.takeoff()
+                if (hand <= 500 and thumb >= 200):
+                    #Land
+                    print("Landing...")
+                    client.land()
+        except(IndexError):
+            print("Connecting to glove...")
+            time.sleep(5)
+    data_glove_thread.close()
+main()
+

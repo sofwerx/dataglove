@@ -1,0 +1,8 @@
+{
+  "remote.RemoteControl": {
+    "display_name": "Remote Control",
+    "explanation": "Use an external computer and gamepad input device to send movement commands to the vehicle at high rate.",
+    "hint": "Control the vehicle from a computer.",
+    "short_name": "Remote"
+  }
+}
