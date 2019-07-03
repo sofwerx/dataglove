@@ -426,10 +426,14 @@ class GloveSerialListener(threading.Thread):
 stream_settings = {'source': 'NATIVE', 'port': 55004}
 
 #Create Client
-client = HTTPClient('http://192.168.10.1',
-                pilot=True,
-                token_file=0,
-                stream_settings=stream_settings)
+try:
+    client = HTTPClient('http://192.168.10.1',
+                    pilot=True,
+                    token_file=0,
+                    stream_settings=stream_settings)
+except(OSError):
+    print("Failed to connect to drone! Exiting...")
+    exit()
 
 # Periodically poll the status endpoint to keep ourselves the active pilot.
 def update_loop():
