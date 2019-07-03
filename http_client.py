@@ -234,7 +234,7 @@ class HTTPClient(object):
         self.disable_faults()
 
         while True:
-            time.sleep(1)  # downsample to prevent spamming the endpoint
+            time.sleep(5)  # downsample to prevent spamming the endpoint
             phase = self.update_pilot_status().get('flightPhase')
             if not phase:
                 continue
@@ -245,8 +245,15 @@ class HTTPClient(object):
             elif phase == 'FLYING':
                 fmt_out('Flying.\n')
                 return
+            elif phase == 'REST':
+                fmt_out('on standby\n')
             elif phase == 'FLIGHT_PROCESSES_CHECK':
-                fmt_out('Pre-Flight Check in progress...')
+                fmt_out('Pre-Flight Check in progress\n')
+            elif phase == 'PREP':
+                fmt_out('Callibrating Cameras\n')
+            elif phase == 'LOGGING_START':
+                fmt_out('Initializing flight logs\n')
+
             else:
                 # print the active faults
                 fmt_out('Faults = {}\n', ','.join(self.get_blocking_faults()))
