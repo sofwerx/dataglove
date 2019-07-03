@@ -450,26 +450,30 @@ def main():
 
     while True:
         time.sleep(1)
-        if (data[0] == 1):
-            time.sleep(1)
-            thumb = (data[2] + data[3])
-            index = (data[4] + data[5])
-            middle = (data[6] + data[7])
-            ring = (data[8] + data[9])
-            pinky = (data[10] + data[11])
-            fingers = [thumb,index,middle,ring,pinky]
-            hand = sum([data[2], data[3], data[4], data[5], data[6], data[7], data[8], data[9], data[10], data[11]])
-            print(fingers,hand)
-            
-            #Define poses here
-            if (hand >= 600):
-                #Takeoff
-                print("Taking off...")
-                client.takeoff()
-            if (hand <= 500 and thumb >= 200):
-                #Land
-                print("Landing...")
-                client.land()
+        try:
+            if (data[0] == 1):
+                time.sleep(1)
+                thumb = (data[2] + data[3])
+                index = (data[4] + data[5])
+                middle = (data[6] + data[7])
+                ring = (data[8] + data[9])
+                pinky = (data[10] + data[11])
+                fingers = [thumb,index,middle,ring,pinky]
+                hand = sum([data[2], data[3], data[4], data[5], data[6], data[7], data[8], data[9], data[10], data[11]])
+                print(fingers,hand)
+                
+                #Define poses here
+                if (hand >= 600):
+                    #Takeoff
+                    print("Taking off...")
+                    client.takeoff()
+                if (hand <= 500 and thumb >= 200):
+                    #Land
+                    print("Landing...")
+                    client.land()
+        except(IndexError):
+            print("Connecting to glove...")
+            time.sleep(5)
     data_glove_thread.close()
 main()
 
