@@ -494,6 +494,13 @@ def main():
                     droneidle = False
                     print("Sentry Mode Active")
                     client.set_skill("security_bot")
+                
+                #Hookem
+                if (index <= 20 and middle >= 140 and ring >= 140 and pinky <= 20):
+                    print("Hookem")
+                    droneidle = False
+                    print("Scanning area")
+                    client.set_skill("pano")
 
                 else:
                     #Do nothing for undefined poses
