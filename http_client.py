@@ -238,7 +238,7 @@ class HTTPClient(object):
             phase = self.update_pilot_status().get('flightPhase')
             if not phase:
                 continue
-            fmt_out('flight phase = {}\n', phase)
+            #fmt_out('flight phase = {}\n', phase)
             if phase == 'READY_FOR_GROUND_TAKEOFF':
                 fmt_out('Publishing ground takeoff\n')
                 self.request_json('async_command', {'command': 'ground_takeoff'})
@@ -469,32 +469,33 @@ def main():
                 pinky = (data[10] + data[11])
                 fingers = [thumb,index,middle,ring,pinky]
                 hand = sum([data[2], data[3], data[4], data[5], data[6], data[7], data[8], data[9], data[10], data[11]])
-                print(fingers,hand)
+                #print(fingers,hand)
                 
                 #Define poses here
-                pose = "ofnen"
+                droneidle = True
 
                 #Fist
                 if (hand >= 600 and thumb >= 30):
                     print("Fist")
-                    pose = "fist"
+                    droneidle = False
+                    client.land()
 
                 #Thumbs Up
                 if (thumb <= 20 and index >= 140 and middle >= 140 and ring >= 100 and pinky >= 120):
                     print("Thumbs Up")
-                    pose = "thumbsup"
-                else:
-                    pose = "ofnen"
-                    #Do nothing
-
-                #Define pose functions
-                if (pose == "fist"):
-                    client.land()
-                if (pose == "thumbsup"):
+                    droneidle = False
                     client.takeoff()
+                else:
+                    #Do nothing for undefined poses
+                    droneidle = True
 
-
-
+        #Add exceptions here
+        except(KeyboardInterrupt):
+            exit()
+        except(AttributeError):
+            print("The drone has been commandeered!")
+            print("Exiting...")
+            exit()
         except(IndexError):
             print("Connecting to glove...")
             time.sleep(5)
