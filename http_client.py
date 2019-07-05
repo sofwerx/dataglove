@@ -463,6 +463,7 @@ def main():
             
             #Define poses here
             pose = "ofnen"
+            glovestate = "unlocked"
 
             if (hand >= 600 and thumb >= 30):
                 print("Fist")
@@ -483,11 +484,23 @@ def main():
                 pose = "ofnen"
             
             #Define pose functions
-            if (pose == "fist"):
+            if (pose == "thumbsup"):
                 client.takeoff()
-            if (pose == "four")
+            if (pose == "fist"):
                 client.land()
-                
+            if (pose == "peace"):
+                client.set_skill("security_bot")
+            if (pose == "hookem"):
+                client.set_skill("pano")
+            
+            #Lock Glove / Switch mode
+            if (pose == "four" and glovestate == "unlocked"):
+                glovestate = "locked"
+                print(glovestate)
+            if (pose == "four" and glovestate == "locked"):
+                glovestate = "unlocked"
+                print(glovestate)
+
     data_glove_thread.close()
 main()
 
