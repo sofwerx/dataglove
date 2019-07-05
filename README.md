@@ -13,5 +13,6 @@ A proof of concept (POC) demonstrating the control of a skydio drone with a comm
 + **Hookem Horns:** Survey, spin 360 degrees in a circle to view surroundings
 ## ToDo
 + Add waypoint mode using the polygon skill
++ Add rotational guestures with the IMU onboard the glove
 ## Resources
 + https://github.com/Skydio/skydio-skills
