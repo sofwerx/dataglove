@@ -234,19 +234,28 @@ class HTTPClient(object):
         self.disable_faults()
 
         while True:
-            time.sleep(1)  # downsample to prevent spamming the endpoint
+            time.sleep(5)  # downsample to prevent spamming the endpoint
             phase = self.update_pilot_status().get('flightPhase')
             if not phase:
                 continue
-            fmt_out('flight phase = {}\n', phase)
+            #fmt_out('flight phase = {}\n', phase)
             if phase == 'READY_FOR_GROUND_TAKEOFF':
                 fmt_out('Publishing ground takeoff\n')
                 self.request_json('async_command', {'command': 'ground_takeoff'})
             elif phase == 'FLYING':
                 fmt_out('Flying.\n')
                 return
+            elif phase == 'REST':
+                fmt_out('on standby\n')
+            elif phase == 'FLIGHT_PROCESSES_CHECK':
+                fmt_out('Pre-Flight Check in progress\n')
+            elif phase == 'PREP':
+                fmt_out('Callibrating Cameras\n')
+            elif phase == 'LOGGING_START':
+                fmt_out('Initializing flight logs\n')
+
             else:
-                # print the active faults
+                # print the active faults, remove after debug
                 fmt_out('Faults = {}\n', ','.join(self.get_blocking_faults()))
 
     def land(self):
@@ -460,17 +469,33 @@ def main():
                 pinky = (data[10] + data[11])
                 fingers = [thumb,index,middle,ring,pinky]
                 hand = sum([data[2], data[3], data[4], data[5], data[6], data[7], data[8], data[9], data[10], data[11]])
-                print(fingers,hand)
+                #print(fingers,hand)
                 
                 #Define poses here
-                if (hand >= 600):
-                    #Takeoff
-                    print("Taking off...")
-                    client.takeoff()
-                if (hand <= 500 and thumb >= 200):
-                    #Land
-                    print("Landing...")
+                droneidle = True
+
+                #Fist
+                if (hand >= 600 and thumb >= 30):
+                    print("Fist")
+                    droneidle = False
                     client.land()
+
+                #Thumbs Up
+                if (thumb <= 20 and index >= 140 and middle >= 140 and ring >= 100 and pinky >= 120):
+                    print("Thumbs Up")
+                    droneidle = False
+                    client.takeoff()
+                else:
+                    #Do nothing for undefined poses
+                    droneidle = True
+
+        #Add exceptions here
+        except(KeyboardInterrupt):
+            exit()
+        except(AttributeError):
+            print("The drone has been commandeered!")
+            print("Exiting...")
+            exit()
         except(IndexError):
             print("Connecting to glove...")
             time.sleep(5)
