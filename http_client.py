@@ -475,16 +475,33 @@ def main():
                 droneidle = True
 
                 #Fist
-                if (hand >= 600 and thumb >= 30):
+                if (thumb >= 30 and index >= 140 and middle >= 140 and ring >= 100 and pinky >= 120):
                     print("Fist")
                     droneidle = False
+                    print("Landing")
                     client.land()
 
                 #Thumbs Up
                 if (thumb <= 20 and index >= 140 and middle >= 140 and ring >= 100 and pinky >= 120):
                     print("Thumbs Up")
                     droneidle = False
+                    print("Taking off")
                     client.takeoff()
+                
+                #Peace
+                if (thumb >= 30 and index <= 20 and middle <= 20 and ring >= 100 and pinky >= 120):
+                    print("Peace")
+                    droneidle = False
+                    print("Sentry Mode Active")
+                    client.set_skill("security_bot")
+                
+                #Hookem
+                if (index <= 20 and middle >= 140 and ring >= 140 and pinky <= 20):
+                    print("Hookem")
+                    droneidle = False
+                    print("Scanning area")
+                    client.set_skill("pano")
+
                 else:
                     #Do nothing for undefined poses
                     droneidle = True
