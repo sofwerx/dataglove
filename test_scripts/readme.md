@@ -25,15 +25,42 @@ OR
             self.data.append(b)
 ```
 The byte array begins with 0xF0, followed by 13 data bytes where the 14th byte is 0xf7.<br>
+### Finger Data
 Byte # HEX DEC Description
 0. 0xF0 240 - Start
 1. 0x01 1 - ID (FRAME_ID_SENSOR)
 2. 0x0B 11 - Data length (10 sensor + 1 battery bytes)
 3. 0x## ## - Sensor 1 (Thumb Sensor 1)
-4.-11 0x## ## - … Sensor 2 - Sensor 9
+4. 0x## ## - … Sensor 2 - Sensor 9
+5. 
+6. 
+7. 
+8. 
+9. 
+10. 
+11. 
 12. 0x## ## - Sensor 10 (Pinky Sensor 2)
 13. 0x## ## - Battery
 14. 0xF7 247 - Stop
+
+### IMU Data
+Byte # HEX DEC Description
+0. 0xF0 240 - Start
+1. 0x02 2 - ID (FRAME_ID_IMU)
+2. 0x20 12 - Data length (12 IMU)
+3. 0x## ## - Quat W.2
+4. 0x## ## - Quat W.1
+5. 0x## ## - Quat W.0
+6. 0x##      ## - … Quat X - Quat Y
+7. 
+8. 
+9. 
+10. 
+11. 
+12. 0x## ## - Quat Z.2
+13. 0x## ## - Quat Z.1
+14. 0x## ## - Quat Z.0
+15. 0xF7 247 - Stop
 <br>
 Each finger sensor can be added together to achieve an overall flex number from 0 being fully extended and 254 being fully closed. These numbers can then be stored in finger values as follows:<br>
             thumb = (data[2] + data[3])<br>
