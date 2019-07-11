@@ -24,22 +24,16 @@ OR
         else:
             self.data.append(b)
 ```
-The script parses a byte array of 14 elements.<br>
-
-0. Data type - If 1, the following data is from flex sensors, if 2, the following data is from the IMU
-1. Verification byte
-2. Thumb 1 (0-127)
-3. Thumb 2 (0-127)
-4. Index 1 (0-127)
-5. Index 2 (0-127)
-6. Middle 1 (0-127)
-7. Middle 2 (0-127)
-8. Ring 1 (0-127)
-9. Ring 2 (0-127)
-10. Pinky 1 (0-127)
-11. Pinky 2 (0-127)
-12.
-13. Constant - 127
+The byte array begins with 0xF0, followed by 13 data bytes where the 14th byte is 0xf7.<br>
+Byte # HEX DEC Description
+0. 0xF0 240 - Start
+1. 0x01 1 - ID (FRAME_ID_SENSOR)
+2. 0x0B 11 - Data length (10 sensor + 1 battery bytes)
+3. 0x## ## - Sensor 1 (Thumb Sensor 1)
+4.-11 0x## ## - … Sensor 2 - Sensor 9
+12. 0x## ## - Sensor 10 (Pinky Sensor 2)
+13. 0x## ## - Battery
+14. 0xF7 247 - Stop
 <br>
 Each finger sensor can be added together to achieve an overall flex number from 0 being fully extended and 254 being fully closed. These numbers can then be stored in finger values as follows:<br>
             thumb = (data[2] + data[3])<br>
