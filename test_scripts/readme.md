@@ -1,7 +1,7 @@
 ## Glove Documentation
 The dataglove.py script is a demonstration of parsing the serial port data from the right-handed dataglove.<br>
 1. First, the glove must be connected to the device via serial port.
-2. After the glove is connected, the following bytes are sent to tell the glove to begin streaming and to use either USB or BLUETOOTH:
+2. After the glove is connected, the following bytes must be sent to tell the glove to begin streaming and to use either USB or BLUETOOTH:
 ```            # data on
             self.glove.write(bytearray([176, 115, 1]))
 AND
