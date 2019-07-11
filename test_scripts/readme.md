@@ -1,5 +1,30 @@
 ## Glove Documentation
-The dataglove.py script is a demonstration of parsing the serial port data from the right-handed dataglove. The script parses a byte array of 14 elements.<br>
+The dataglove.py script is a demonstration of parsing the serial port data from the right-handed dataglove.<br>
+1. First, the glove must be connected to the device via serial port.
+2. After the glove is connected, the following bytes must be sent to tell the glove to begin streaming and to use either USB or BLUETOOTH:
+```            # data on
+            self.glove.write(bytearray([176, 115, 1]))
+AND
+            # usb mode
+            #self.glove.write(bytearray([176, 118, 1]))
+OR
+            # bluetooth mode
+            self.glove.write(bytearray([176, 118, 2]))
+```
+3. The Glove will now begin streaming bytes.<br>
+4. Collect the bytes and parse them as follows, appending them to the data array:
+```     b = int.from_bytes(byte_to_parse, byteorder='big')
+        if b == 240:
+            self.data = []
+        elif b == 247:
+            self.data.append(b)
+
+            if (self.data[0] == 1):
+                data = self.data
+        else:
+            self.data.append(b)
+```
+The script parses a byte array of 14 elements.<br>
 
 0. Data type - If 1, the following data is from flex sensors, if 2, the following data is from the IMU
 1. Verification byte
