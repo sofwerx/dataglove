@@ -4,6 +4,11 @@ import sys
 import threading
 import numpy as np
 
+#Rename to correct serial port
+device = '/dev/rfcomm0'
+#Make False for USB serial port
+bluetoothmode = True
+
 # © 2019 BeBop Sensors, Inc.
 data = []
 
@@ -13,7 +18,7 @@ class GloveSerialListener(threading.Thread):
 
         self.glove = serial.Serial()
         self.glove.baudrate = 460800
-        self.glove.port = '/dev/rfcomm0'
+        self.glove.port = device
         self.glove.timeout = 1
         self.glove.open()
 
@@ -45,11 +50,12 @@ class GloveSerialListener(threading.Thread):
             # data on
             self.glove.write(bytearray([176, 115, 1]))
 
-            # usb mode
-            #self.glove.write(bytearray([176, 118, 1]))
-
-            # bluetooth mode
-            self.glove.write(bytearray([176, 118, 2]))
+            if (bluetoothmode != True):
+                self.glove.write(bytearray([176, 118, 1]))
+            elif (bluetoothmode == True):
+                self.glove.write(bytearray([176, 118, 2]))
+            else:
+                print("ERROR! bluetooth mode not set!")
 
             while True:
                 self.parse(self.glove.read())
@@ -58,7 +64,7 @@ class GloveSerialListener(threading.Thread):
             self.close()
 
 def main():
-    data_glove_thread = GloveSerialListener('/dev/rfcomm0')
+    data_glove_thread = GloveSerialListener(device)
     data_glove_thread.start()
 
     #Wait for data
